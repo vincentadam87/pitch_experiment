@@ -11,3 +11,7 @@
 *.pdf
 *.fdb_latexmk
 *.synctex.gz
+
+# other
+*.md~
+
