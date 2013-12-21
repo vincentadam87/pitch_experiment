@@ -4,23 +4,29 @@ import numpy as np
 import random 
 class exp_param:
 
-	rate = 44100 #44.1 khz
-	f0 =250
+	# Global parameters
+	rate = 44100 #44.1 khz, the sampling rate
+	f0 =250 
+	# Experiment structure
+	N_stim = 23 # total number of stim
+	N_rep = 1 # number of repetition per stim
+	# Stimulus parameters
 	duration_tot = 0.38 # 
 	duration_stim =0.06 # total duration of stimulus in sec
 	interval = 0.1
-	BROAD = 20000
-	DARK = 3500
-	f_w = 2000 # the width of lowpass filter cutoff
-	f_w_noise = 200
-	f_c_noise = 1000
-
-
-	harmonics_hct = [1,20]
+	### ACT & HCT
+	BROAD = 20000 # cutoff frequency
+	DARK = 3500 #
+	### Flanker
 	harmonics_flanker = [2,20] 
+	# noise characteristics
+	f_c_noise = 1000
 
 	level = 1000
 	
+	time_stim = np.arange(0,np.floor(duration_tot*rate))/rate
+	time_target = np.arange(0,np.floor(duration_stim*rate))/rate
+
 	Sound_array = np.array([
 	    # ACT Stimuli
 	    [0,f0, 1, 0, DARK], #1
@@ -49,8 +55,6 @@ class exp_param:
 	    [2,2*f0, 4.0, -6, DARK], #22
 	    [2,2*f0, 4.0, -6, DARK]]) #23
 		
-	N_stim = 23 # total number of stim
-	N_rep = 1 # number of repetition per stim
 
 	def __init__(self):
 		pass

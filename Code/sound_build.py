@@ -3,8 +3,9 @@
 import numpy as np
 import filtering as filt
 
-
-# ------------ Base functions
+# -----------------------------------------------------------------
+# ------------ Base functions (Experiment independent)
+# -----------------------------------------------------------------
 
 # Normalizing sounds (set std to 1)
 def normalize(x):
@@ -22,19 +23,13 @@ def half_period_shift(x,f0,rate):
 def white_noise(l):
     return np.random.randn(l) 
 
-def make_lp_noise(n,exp):
-    f_c_noise = exp.f_c_noise
-    f_w_noise = exp.f_w_noise
-    rate = exp.rate
-
+def make_lp_noise(n,f_c_noise,rate):
+    # load experiment parameters
     a,b = filt.make_low_pass_butterworth(f_c_noise, 6,rate) 
-    #fir,N,nyq_rate = filt.make_low_pass_FIR(f_c_noise,f_w_noise,rate)
-    N = 0
+    N = 0 # to cut begining of filter convolution
     wn = np.random.randn(n+N) # generate white noise
-    #fwn = filt.apply_filter(wn,fir)
     fwn = filt.apply_filter(wn,a,b)
     return normalize(fwn[-n:]) 
-
 
 
 def add_to_stim(stim,x,i_start):
@@ -46,7 +41,6 @@ def make_time(duration,rate):
 
 
 # ------------------- define functions to generate sounds
-
 
 # Pure tone, amplitude 1
 def normedsin(f,t):
@@ -79,7 +73,10 @@ def hct(f,t,k):
         y = y + normedsin(i*f,t);
     return np.divide(y,len(k))
 
-#############################################################
+# -----------------------------------------------------------------
+# ------------ Sound generation functions (Experiment dependent)
+# -----------------------------------------------------------------
+
 
 def make_flanker(exp):
     # loading parameters
@@ -144,32 +141,23 @@ def make_triplet(flanker,target,exp):
 # calls individual target functions that outputs normalized signals (std = 1)
 def make_target(i,exp):
     # loading parameters
-    duration_stim = exp.duration_stim
-    rate = exp.rate
-    f_w = exp.f_w
     Sound_array = exp.Sound_array
-    harmonics_hct = exp.harmonics_hct
     # function
-
-    time_stim = make_time(duration_stim,rate)
     stim_op = Sound_array[i]
     print(stim_op)
     stim_type = stim_op[0]
     if (stim_type == 0):
         f = stim_op[1]
         ratio = stim_op[2]
-        snrdb = stim_op[3]
         f_c = stim_op[4]
         target = make_act_target(ratio,f_c,exp)
     if (stim_type == 1):
         f = stim_op[1]
-        snrdb = stim_op[2]
         f_c = stim_op[3]
         target = make_hct_target(f,f_c,exp)
     if (stim_type == 2):
         f = stim_op[1]
         ratio = stim_op[2]
-        snrdb = stim_op[3]
         f_c = stim_op[4]
         target = make_act_control(ratio,f_c,exp)
     return target
@@ -178,18 +166,14 @@ def make_target(i,exp):
 # noise is added assuming a signal std of 1
 def make_noisy_stim(i,exp):
     # loading parameters
-    duration_stim = exp.duration_stim
     rate = exp.rate
-    f_w = exp.f_w
-    f0 = exp.f0
     Sound_array = exp.Sound_array
-
+    f_c_noise = exp.f_c_noise
     # function
-    time_stim = make_time(duration_stim,rate)
     y = make_triplet( make_flanker(exp),make_target(i,exp),exp)
     snrdb = Sound_array[i][2]
-    return y+10**(-snrdb/20)*make_lp_noise(len(y),exp)
-
+    y = y+10**(-snrdb/20)*make_lp_noise(len(y),f_c_noise,rate)
+    return y
 
 def make_training_sound(i,exp):
     # loading parameters
