@@ -131,9 +131,10 @@ def make_triplet(flanker,target,exp):
     # loading parameters
     rate = exp.rate
     interval = exp.interval
+    se_blank_duration = exp.se_blank_duration
     # function
-    stim = np.zeros(2*len(flanker)+len(target)+2*rate*interval)
-    i = 0; stim = add_to_stim(stim,(flanker),i)
+    stim = np.zeros(2*len(flanker)+len(target)+2*rate*interval + 2*rate*se_blank_duration)
+    i = 0+rate*se_blank_duration; stim = add_to_stim(stim,(flanker),i)
     i = i + len(flanker)+rate*interval; stim = add_to_stim(stim,(target),i)
     i = i + len(target)+rate*interval;  stim = add_to_stim(stim,(flanker),i)
     return stim

@@ -11,9 +11,12 @@ class exp_param:
 	N_stim = 23 # total number of stim
 	N_rep = 1 # number of repetition per stim
 	# Stimulus parameters
-	duration_tot = 0.38 # 
-	duration_stim =0.06 # total duration of stimulus in sec
 	interval = 0.1
+	se_blank_duration = 0.02
+
+	duration_stim =0.06 # total duration of stimulus in sec
+	duration_tot = 3*duration_stim + 2*interval + 2*se_blank_duration #0.38  
+	
 	### ACT & HCT
 	BROAD = 20000 # cutoff frequency
 	DARK = 3500 #
