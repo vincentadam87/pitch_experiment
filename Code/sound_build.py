@@ -39,6 +39,9 @@ def add_to_stim(stim,x,i_start):
 def make_time(duration,rate):
     return np.linspace(0,duration, num=rate*duration)
 
+def make_time_from_x(x,rate):
+    return np.linspace(0,len(x)*rate, num=len(x))
+
 
 # ------------------- define functions to generate sounds
 
@@ -86,31 +89,29 @@ def make_flanker(exp):
     harmonics_flanker = exp.harmonics_flanker
     # function
     time_stim = make_time(duration_stim,rate)
-    fi = np.exp((2*np.log(f0)-np.log(2))/2) 
+    fi = np.sqrt(2)*f0  # fi is here between f0 and 2f0
     return normalize(hct(fi,time_stim,harmonics_flanker))
 
-def make_act_target(ratio,f_c, exp):
+def make_act_target(ratio,f,f_c, exp):
     # loading parameters
-    f0 = exp.f0
     duration_stim = exp.duration_stim
     rate = exp.rate
     # function
     time_stim = make_time(duration_stim,rate)
     #fir,N,nyq_rate = filt.make_low_pass_FIR(f_c,f_w,rate)
     a,b = filt.make_low_pass_butterworth(f_c, 6,rate)  
-    return normalize(filt.apply_filter(act(1,1/float(ratio),f0,time_stim),a,b))
+    return normalize(filt.apply_filter(act(1,1/float(ratio),f,time_stim),a,b))
 
-def make_act_control(ratio,f_c,exp):
+def make_act_control(ratio,f,f_c,exp):
     # loading parameters
-    f0 = exp.f0
     duration_stim = exp.duration_stim
     rate = exp.rate
     # function
     time_stim = make_time(duration_stim,rate)
     #fir,N,nyq_rate = filt.make_low_pass_FIR(f_c,f_w,rate)
     a,b = filt.make_low_pass_butterworth(f_c, 6,rate)   
-    x= filt.apply_filter(act(0,1/float(ratio),f0,time_stim),a,b)
-    y= filt.apply_filter(act(1,1/float(ratio),f0,time_stim),a,b)
+    x= filt.apply_filter(act(0,1/float(ratio),f,time_stim),a,b)
+    y= filt.apply_filter(act(1,1/float(ratio),f,time_stim),a,b)
     return np.divide(x,np.std(y)) # cross normalization
 
 def make_hct_target(f,f_c,exp):
@@ -145,21 +146,21 @@ def make_target(i,exp):
     # function
     stim_op = Sound_array[i]
     print(stim_op)
-    stim_type = stim_op[0]
+    stim_type = stim_op[0] # ACT Stimuli
     if (stim_type == 0):
         f = stim_op[1]
         ratio = stim_op[2]
         f_c = stim_op[4]
-        target = make_act_target(ratio,f_c,exp)
-    if (stim_type == 1):
+        target = make_act_target(ratio,f,f_c,exp)
+    if (stim_type == 1): # HCT Stimuli
         f = stim_op[1]
         f_c = stim_op[3]
         target = make_hct_target(f,f_c,exp)
-    if (stim_type == 2):
+    if (stim_type == 2): # ACT Controls
         f = stim_op[1]
         ratio = stim_op[2]
         f_c = stim_op[4]
-        target = make_act_control(ratio,f_c,exp)
+        target = make_act_control(ratio,f,f_c,exp)
     return target
 
 

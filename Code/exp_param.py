@@ -18,7 +18,7 @@ class exp_param:
 	BROAD = 20000 # cutoff frequency
 	DARK = 3500 #
 	### Flanker
-	harmonics_flanker = [2,20] 
+	harmonics_flanker = [3,20] # harmonics chosen to best match timbre of target alternating click trains
 	# noise characteristics
 	f_c_noise = 1000
 
