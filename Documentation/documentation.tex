@@ -8,7 +8,7 @@
 \usepackage[margin=0.5in]{geometry}
 \usepackage{url}
 \usepackage{filecontents}
-\usepackage{mathdots}
+%\usepackage{mathdots}
 \usepackage[toc,page]{appendix}
 
 \setlength\parindent{0pt}
@@ -46,7 +46,7 @@
 From Philipp Hehrmann's thesis:\\
 The most common type of errors in pitch judgements, aside from small deviations around the true pitch due to limited discriminability, are octave mistakes.
 These errors are strongly influenced by brightness of stimulus timbre.
-Here we study these influences - that is how brightness influence the way human resolve ambiguity - for stimuli of fixed pitch chroma and varied brighness.
+Here we study these influences - that is how brightness influences the way humans resolve ambiguity - for stimuli of fixed pitch chroma and varied brighness.
 
 \section{Task description}
 
@@ -55,9 +55,10 @@ In each trial, subjects are presented an A-B-A sound triplet where A is a flanke
 Trial description:
 \begin{itemize}
 \item Inter-trial interval (time between response and next stimulus onset) = 1s
-\item stimulus duration = 380 ms
+\item stimulus duration = 400 ms
 \item stimulus structure:
-flanker (60ms) - pause (100ms) - target (60ms) - pause (100ms) - flanker (60ms)
+B (10ms) - F (60ms) - B (100ms) - T (60ms) - B (100ms) - F (60ms) - B (10ms)\\
+with B=Blank, F=Flanker, T=Target
 \end{itemize}
 
 \subsection{Calibration}
@@ -101,15 +102,15 @@ I separately describe flanker, targets and the low pass filtered noise
 %--------------------------------
 \subsection{Flanker}
 
-Missing fundamental HCT at $f_i$ such that $\log f_i = \frac{1}{2}(\log f_0 + \log \frac{f_0}{2})$, half an octave between the two possible target fundamental frequencies
+Missing fundamental HCT at $f_i = \frac{f_0}{\sqrt(2)}$, half an octave between the two possible target fundamental frequencies
 
 \begin{itemize}
 \item $f_i = 353 Hz$
-\item Harmonics $2-20$, sine phase, equal amplitude
+\item Harmonics $3-20$, sine phase, equal amplitude (harmonics chosen to match target ACT timbre)
 \end{itemize}
 
-Flankers evoke a strong and unambiguous pitch at $f_i$
-
+Flankers evoke a strong and unambiguous pitch at $f_i$\\
+Harmonic convention: $i^{th}$ harmonics is at frequency $i f_0$
 %--------------------------------
 \subsection{Targets}
 
@@ -151,7 +152,7 @@ If those controls elicit a 'correct' pitch percept, it means they are not masked
 \item   amplitude = $1/4$ (corresponds to amplitude of low CT in lowest ratio ACT targets) 
 \end{itemize}
 
-For these controls, snr are defined in reference to the corresponding ACT (adding back the CT of amplitude 1)
+For these controls, snr are defined in reference to the corresponding ACT target (adding back the CT of amplitude 1)
 %-------------------------------------------------------
 
 \subsection{Background noise}
