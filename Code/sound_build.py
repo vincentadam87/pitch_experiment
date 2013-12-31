@@ -146,22 +146,26 @@ def make_target(i,exp):
     Sound_array = exp.Sound_array
     # function
     stim_op = Sound_array[i]
-    print(stim_op)
     stim_type = stim_op[0] # ACT Stimuli
     if (stim_type == 0):
-        f = stim_op[1]
-        ratio = stim_op[2]
+        f = stim_op[2]
+        ratio = stim_op[3]
         f_c = stim_op[4]
         target = make_act_target(ratio,f,f_c,exp)
+        name = "ACT target [-,snrdb,-,ratio,timbre]"
     if (stim_type == 1): # HCT Stimuli
-        f = stim_op[1]
+        f = stim_op[2]
         f_c = stim_op[3]
         target = make_hct_target(f,f_c,exp)
+        name = "HCT target [-,snrdb,f0,timbre]"
     if (stim_type == 2): # ACT Controls
-        f = stim_op[1]
-        ratio = stim_op[2]
+        f = stim_op[2]
+        ratio = stim_op[3]
         f_c = stim_op[4]
         target = make_act_control(ratio,f,f_c,exp)
+        name = "ACT control [-,snrdb,-,ratio (one CT only),timbre]"
+    print(name)
+    print(stim_op)
     return target
 
 
@@ -173,7 +177,9 @@ def make_noisy_stim(i,exp):
     f_c_noise = exp.f_c_noise
     # function
     y = make_triplet( make_flanker(exp),make_target(i,exp),exp)
-    snrdb = Sound_array[i][2]
+    
+    snrdb = Sound_array[i][1]
+    print(snrdb)
     y = y+10**(-snrdb/20)*make_lp_noise(len(y),f_c_noise,rate)
     return y
 
