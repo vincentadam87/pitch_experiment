@@ -1,4 +1,3 @@
-
 from psychopy import core, visual, gui, data, event
 from psychopy.misc import fromFile, toFile
 import time, numpy, random
@@ -10,30 +9,40 @@ import numpy as np
 #------------ load global experiment parameters
 Exp = exp_param.exp_param()
 iti = Exp.iti
+
+# constants initialization
 TOP_POS = [0,+3]
 CENTER_POS = [0,0]
-BOTTOM_POS = [0,-3]
-# ---------------------
+BOTTOM_POS = [0,-4]
+# function definition
+
 def get_subject_info():
-    try:#try to get a previous parameters file
-        expInfo = fromFile('lastParams.pickle')
-    except:#if not there then use a default set
+    try:
+        expInfo = fromFile('lastParams.pickle') # check existence of previous parameter file
+    except:
         expInfo = {'pseudo':'pseudo'}
-        expInfo['date']= data.getDateStr() #add the current time
-    #present a dialog box to change params
+        expInfo['date']= data.getDateStr() #add current time
+    #present a dialog box to get user info
     dlg = gui.DlgFromDict(expInfo, title='Experiment', fixed=['date'])
     if dlg.OK:
         toFile('lastParams.pickle', expInfo)#save params to file for next time
     else:
-        core.quit()#the user hit cancel so exit
+        core.quit()#cancel -> exit
     return expInfo
 
+def set_msg(txt,type):
+    if (type == 'TITLE'):
+        m = visual.TextStim(win,text=txt, pos=TOP_POS, bold=True,wrapWidth = 30)
+    elif (type == 'MAIN'):
+        m = visual.TextStim(win,text=txt, pos=CENTER_POS,wrapWidth = 30)
+    elif (type == 'KEY'):
+        m = visual.TextStim(win,text=txt, pos=BOTTOM_POS,wrapWidth = 30)
+    m.draw()    
+    
 def run_calibration():
     # display instructions
-    message_cal= visual.TextStim(win,text='SET SOUND LEVEL', pos=TOP_POS, bold=True)
-    message_cal_instr = visual.TextStim(win,text='press up and down to increase/decrease sound level and press enter when level is confortable',pos=CENTER_POS,wrapWidth = 30)
-    message_cal.draw()
-    message_cal_instr.draw()
+    set_msg('SET SOUND LEVEL','TITLE')
+    set_msg('press up and down to increase/decrease sound level and press enter when level is confortable','MAIN')
     win.flip()
     # prepare calibration sound
     level = Exp.level
@@ -66,15 +75,41 @@ def run_calibration():
     return vol
 
 def display_instructions():
-    message_title = visual.TextStim(win,text='INSTRUCTIONS', pos=TOP_POS, bold=True )
-    message_instr = visual.TextStim(win, text="press up or down to charaterize the melodic contour of the sound you hear (Up-Down or Down-Up)", pos=CENTER_POS,wrapWidth = 30)
-    message_presskey = visual.TextStim(win,text='Hit a key when ready.', pos=BOTTOM_POS)
-    message_title.draw()
-    message_instr.draw()
-    message_presskey.draw()
-    win.flip()#to show our newly drawn 'stimuli'
-    #pause until there's a keypress
+    set_msg('INTRODUCTION','TITLE')
+    set_msg('You will perform two small training sessions and the main experiment. The coming instructions apply to the whole experiment','MAIN')
+    set_msg('Press any key to continue','KEY')
+    win.flip()
+    core.wait(0.5)
     event.waitKeys()
+
+    set_msg('INSTRUCTIONS','TITLE')
+    set_msg('press up or down to charaterize the melodic contour of the sound you hear : Up-Down or Down-Up (you will hear some examples during training sessions)','MAIN')
+    win.flip()
+    core.wait(0.5)
+    event.waitKeys()
+
+
+    set_msg('INSTRUCTIONS','TITLE')
+    set_msg('the purpose of the experiment is to probe your subjective perceptual experience. There is no strictly right or wrong response in any trial','MAIN')
+    set_msg('Press any key to continue','KEY')
+    win.flip()
+    core.wait(0.5)
+    event.waitKeys()
+
+    set_msg('INSTRUCTIONS','TITLE')
+    set_msg('Some trials will be ambiguous. In such trials, try to answer rapidly according to your best judgement','MAIN')
+    set_msg('Press any key to continue','KEY')
+    win.flip()
+    core.wait(0.5)
+    event.waitKeys()
+
+    set_msg('INSTRUCTIONS','TITLE')
+    set_msg('Your choices have no influence in what stimulus comes next. If you hear the same stimulus consecutively this is just chance in action','MAIN')
+    set_msg('Press any key to continue','KEY')
+    win.flip()
+    core.wait(0.5)
+    event.waitKeys()
+
 
 def get_response():
     thisResp=None
@@ -91,11 +126,9 @@ def get_response():
                 core.quit() #abort experiment
             else:
                 thisResp = 0
-                message3 = visual.TextStim(win, pos=[0,-3],text='Oops!')
-                message3.draw()
+                set_msg('Oops','KEY')
         event.clearEvents() #must clear other (eg mouse) events - they clog the buffer
         win.flip()        
-
     return thisResp
 
 def run_training(session,duration):
@@ -113,13 +146,9 @@ def run_training(session,duration):
         pygame.mixer.music.set_volume(vol)
         pygame.mixer.music.load("test.wav")
         core.wait(time_play - core.getTime())
-
-        message3 = visual.TextStim(win, pos=[0,-3],text='Up or down?')
-        message3.draw()
+        set_msg('Up or down?','MAIN')
         win.flip()        
-        pygame.mixer.music.play()
-        
-        #core.wait(0.5) #wait 500ms; but use a loop of x frames for more accurate timing in fullscreen
+        pygame.mixer.music.play()        
         
         thisResp = get_response()
         time_play =  core.getTime() + iti
@@ -139,9 +168,7 @@ def run_main_experiment():
         pygame.mixer.music.load("test.wav")
         core.wait(time_play - core.getTime())
         
-        
-        message3 = visual.TextStim(win, pos=[0,-3],text='Up or down?')
-        message3.draw()
+        set_msg('Up or down?','MAIN')
         win.flip()        
         pygame.mixer.music.play()
         core.wait(1) 
@@ -180,44 +207,39 @@ display_instructions()
 ######### TRAINING Sessions #######################
 training_duration = 5
 
-message_sessions_title = visual.TextStim(win,text='TRAINING SESSIONS', pos=TOP_POS, bold=True)
-message_sessions_intro = visual.TextStim(win,text='We will now begin two short training sessions', pos=CENTER_POS)
-message_presskey = visual.TextStim(win,text='Hit a key when ready.', pos=BOTTOM_POS)
-message_sessions_title.draw()
-message_sessions_intro.draw()
-message_presskey.draw()
-win.flip()
-event.waitKeys()
-core.wait(0.5) #wait 500ms; but use a loop of x frames for more accurate timing in fullscreen
 
-message_session1 = visual.TextStim(win, pos=[0,3],text='Session 1')
-message_presskey = visual.TextStim(win, pos=[0,-3],text='Hit a key when ready.')
-message_session1.draw()
-message_presskey.draw()
+set_msg('TRAINING SESSIONS','TITLE')
+set_msg('We will now begin two short training sessions','MAIN')
+set_msg('Press return to continue','KEY')
 win.flip()
-event.waitKeys()
+
+event.waitKeys(keyList=['return','space'])
+
+
+set_msg('SESSION 1','TITLE')
+set_msg('Press enter to begin','KEY')
+win.flip()
+event.waitKeys(keyList=['return'])
 run_training(1,training_duration)
-message_session1 = visual.TextStim(win, pos=[0,3],text='Session 1 completed')
-message_presskey = visual.TextStim(win, pos=[0,-3],text='Hit a key when ready.')
-message_session1.draw()
-message_presskey.draw()
-win.flip()
-event.waitKeys()
 
-message_session2 = visual.TextStim(win, pos=[0,3],text='Session 2')
-message_presskey = visual.TextStim(win, pos=[0,-3],text='Hit a key when ready.')
-message_session2.draw()
-message_presskey.draw()
+set_msg('SESSION 1','TITLE')
+set_msg('Session 1 completed','MAIN')
+set_msg('Press enter to continue','KEY')
 win.flip()
-event.waitKeys()
+event.waitKeys(keyList=['return'])
+
+set_msg('SESSION 1','TITLE')
+set_msg('Press enter to begin','KEY')
 win.flip()
+event.waitKeys(keyList=['return'])
 run_training(2,training_duration)
-message_session2= visual.TextStim(win, pos=[0,3],text='Session 2 completed')
-message_presskey = visual.TextStim(win, pos=[0,-3],text='Hit a key when ready.')
-message_session2.draw()
-message_presskey.draw()
+
+set_msg('SESSION 2','TITLE')
+set_msg('Session 2 completed','MAIN')
+set_msg('Press enter to continue','KEY')
 win.flip()
-event.waitKeys()
+event.waitKeys(keyList=['return'])
+
 ############## Main experiment ##################
 
 message1 = visual.TextStim(win, pos=[0,+3],text='Hit a key when ready for the real experiment.')
