@@ -2,6 +2,7 @@
 
 import numpy as np
 import filtering as filt
+import random
 
 # -----------------------------------------------------------------
 # ------------ Base functions (Experiment independent)
@@ -92,33 +93,53 @@ def make_flanker(exp):
     fi = np.sqrt(2)*f0  # fi is here between f0 and 2f0
     return normalize(hct(fi,time_stim,harmonics_flanker))
 
-def make_act_target(ratio,f,f_c, exp):
+def make_act_target(ratio,f,timbre, exp):
     # loading parameters
     duration_stim = exp.duration_stim
     rate = exp.rate
     # function
     time_stim = make_time(duration_stim,rate)
     #fir,N,nyq_rate = filt.make_low_pass_FIR(f_c,f_w,rate)
-    a,b = filt.make_low_pass_butterworth(f_c, 6,rate)  
-    return normalize(filt.apply_filter(act(1,1/float(ratio),f,time_stim),a,b))
 
-def make_act_control(ratio,f,f_c,exp):
+    y = act(1,1/float(ratio),f,time_stim)
+    if (timbre == exp.DARK):
+        f_c = exp.fc_ACT_DARK
+        a,b = filt.make_low_pass_butterworth(f_c, 6,rate)  
+        z= normalize(filt.apply_filter(y,a,b))
+    if (timbre == exp.BROAD):
+        z = normalize(y)
+    return z
+
+
+def make_act_control(ratio,f,timbre,exp):
     # loading parameters
     duration_stim = exp.duration_stim
     rate = exp.rate
     # function
     time_stim = make_time(duration_stim,rate)
     #fir,N,nyq_rate = filt.make_low_pass_FIR(f_c,f_w,rate)
-    a,b = filt.make_low_pass_butterworth(f_c, 6,rate)   
-    x= filt.apply_filter(act(0,1/float(ratio),f,time_stim),a,b)
-    y= filt.apply_filter(act(1,1/float(ratio),f,time_stim),a,b)
-    return np.divide(x,np.std(y)) # cross normalization
 
-def make_hct_target(f,f_c,exp):
+    if (timbre == exp.DARK):
+        f_c = exp.fc_ACT_DARK
+        a,b = filt.make_low_pass_butterworth(f_c, 6,rate)  
+        x= filt.apply_filter(act(0,1/float(ratio),f,time_stim),a,b)
+        y= filt.apply_filter(act(1,1/float(ratio),f,time_stim),a,b)
+        return np.divide(x,np.std(y)) # cross normalization
+    if (timbre == exp.BROAD):
+        x= act(0,1/float(ratio),f,time_stim)
+        y= act(1,1/float(ratio),f,time_stim)
+        return np.divide(x,np.std(y)) # cross normalization
+
+def make_hct_target(f,timbre,exp):
     # loading parameters
     duration_stim = exp.duration_stim
     rate = exp.rate
     # function
+
+    if (timbre == exp.DARK):
+        f_c = exp.fc_HCT_DARK
+    if (timbre == exp.BROAD):
+        f_c = exp.fc_HCT_BROAD
 
     k = np.array([0,int(np.floor(f_c/f))]) # crop harmonics over f_c
     print(k)
@@ -150,19 +171,19 @@ def make_target(i,exp):
     if (stim_type == 0):
         f = stim_op[2]
         ratio = stim_op[3]
-        f_c = stim_op[4]
-        target = make_act_target(ratio,f,f_c,exp)
+        timbre = stim_op[4]
+        target = make_act_target(ratio,f,timbre,exp)
         name = "ACT target [-,snrdb,-,ratio,timbre]"
     if (stim_type == 1): # HCT Stimuli
         f = stim_op[2]
-        f_c = stim_op[3]
-        target = make_hct_target(f,f_c,exp)
+        timbre = stim_op[3]
+        target = make_hct_target(f,timbre,exp)
         name = "HCT target [-,snrdb,f0,timbre]"
     if (stim_type == 2): # ACT Controls
         f = stim_op[2]
         ratio = stim_op[3]
-        f_c = stim_op[4]
-        target = make_act_control(ratio,f,f_c,exp)
+        timbre = stim_op[4]
+        target = make_act_control(ratio,f,timbre,exp)
         name = "ACT control [-,snrdb,-,ratio (one CT only),timbre]"
     print(name)
     print(stim_op)
@@ -183,18 +204,10 @@ def make_noisy_stim(i,exp):
     y = y+10**(-snrdb/20)*make_lp_noise(len(y),f_c_noise,rate)
     return y
 
-def make_training_sound(i,exp):
-    # loading parameters
-    duration_stim = exp.duration_stim
-    rate = exp.rate
-    f0 = exp.f0
-    fi = np.exp((2*np.log(f0)-np.log(2))/2) 
-
-    # function
-    time_stim = make_time(duration_stim,rate)
-    x1 = normalize(normedsin(fi,time_stim))
-    x2 = normalize(normedsin(i*f0,time_stim))
+def make_random_training_sound(session,exp):
+    indices = exp.Training_sounds[session-1]
+    N_indices = len(indices)
+    i = random.randint(1,N_indices)
+    return make_noisy_stim(indices[i-1],exp)
     
-    y = make_triplet(x1,x2,exp)
-    return y
 

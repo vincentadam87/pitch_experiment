@@ -5,6 +5,9 @@
 # python
 *.pyc
 
+# psychopy
+*.pickle
+
 # tex 
 *.log
 *.aux

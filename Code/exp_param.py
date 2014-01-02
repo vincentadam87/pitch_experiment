@@ -15,12 +15,18 @@ class exp_param:
 	interval = 0.1
 	se_blank_duration = 0.01
 
+	# task parameters
+	iti = 1
+	
 	duration_stim =0.06 # total duration of stimulus in sec
 	duration_tot = 3*duration_stim + 2*interval + 2*se_blank_duration #0.38  
 	
 	### ACT & HCT
-	BROAD = 20000 # cutoff frequency
-	DARK = 3500 #
+	BROAD = 1
+	DARK = 0
+	fc_ACT_DARK = 3000 #
+	fc_HCT_DARK = 3500 #
+	fc_HCT_BROAD = 20000 #
 	### Flanker
 	harmonics_flanker = [3,20] # harmonics chosen to best match timbre of target alternating click trains
 	# noise characteristics
@@ -63,8 +69,7 @@ class exp_param:
    	    [0, 0,f0, 9   , DARK]]) #24
 
 	Calibration_sounds = [0,1,23,24]
-	Training_sounds1 = [0,1,23,24]
-	Training_sounds2 = [0,1,6,7,12,13]
+	Training_sounds = np.array([[0,1,23,24],[0,1,6,7,12,13]])
 
 	Training_duration = 300 # 5 minutes
 
