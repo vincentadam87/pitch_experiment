@@ -55,18 +55,20 @@ class exp_param:
 	    [0, 0,f0, 4.0   , BROAD], #13
 	    [0, -6,f0, 4.0   , BROAD], #14
 	    # HCT Stimuli
-	    [1, 0,f0, DARK ], #15  % second is freq ratio (1 = f0, 0.5 = f0/2)
-	    [1, 0,f0, BROAD], #16
-	    [1, 0,f0*2, DARK], #17
-	    [1, 0,f0*2, BROAD], #18
+	    [1, 0,f0, DARK, 0], #15  % second is freq ratio (1 = f0, 0.5 = f0/2)
+	    [1, 0,f0, BROAD,0], #16
+	    [1, 0,f0*2, DARK,1], #17
+	    [1, 0,f0*2, BROAD,1], #18
 	    # ACT Control
-	    [2, 0,f0, 4.0, DARK], #19
-	    [2, 0,f0, 4.0, BROAD], #20 
-	    [2, -6,2*f0, 4.0, DARK], #21
-	    [2, -6,2*f0, 4.0, DARK], #22
+	    [2, 0,f0, 4.0, DARK,0], #19
+	    [2, 0,f0, 4.0, BROAD,0], #20 
+	    [2, -6,2*f0, 4.0, DARK,1], #21
+	    [2, -6,2*f0, 4.0, DARK,1], #22
 	    # Additional training
 	    [0, 0,f0, 9   , BROAD], #23
    	    [0, 0,f0, 9   , DARK]]) #24
+
+	CorrectResp = np.array([[15,16,19,20],[17,18,21,22]]) # down / up
 
 	Calibration_sounds = [0,1,23,24]
 	Training_sounds = np.array([[0,1,23,24],[0,1,6,7,12,13]])
@@ -85,4 +87,10 @@ class exp_param:
 		random.shuffle(order2)
 		return order2
 
-
+	def isRespCorrect(self,i,thisResp):
+		if i in exp_param.CorrectResp[0]: # correct response is down
+			return (thisResp == -1) 
+		elif i in exp_param.CorrectResp[1]: # correct response is up
+			return (thisResp == 1)
+		else:
+			return False
