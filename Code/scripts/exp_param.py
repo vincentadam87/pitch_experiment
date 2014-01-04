@@ -22,6 +22,13 @@ class exp_param:
 	duration_tot = 3*duration_stim + 2*interval + 2*se_blank_duration #0.38  
 	
 	### ACT & HCT
+
+	ACT = 0
+	HCT = 1
+	CONTROL = 2
+
+	RATIO = [1,1.69,2.25,2.89,4]
+	
 	BROAD = 1
 	DARK = 0
 	fc_ACT_DARK = 3000 #
@@ -39,40 +46,38 @@ class exp_param:
 
 	Sound_array = np.array([
 	    # ACT Stimuli
-	    [0, 0,f0, 1, DARK], #0
-	    [0, 0,f0, 1, BROAD], #1 
-	    [0, -6,f0, 1, BROAD], #2
-	    [0, 0,f0, 1.69, DARK], #3
-	    [0, 0,f0, 1.69, BROAD], #4
-	    [0, -6,f0, 1.69, BROAD], #5
-	    [0, 0,f0, 2.25, DARK], #6
-	    [0, 0,f0, 2.25, BROAD], #7
-	    [0, -6,f0, 2.25, BROAD], #8
-	    [0, 0,f0, 2.89, DARK], #9
-	    [0, 0,f0, 2.89, BROAD], #10
-	    [0, -6,f0, 2.89, BROAD], #11
-	    [0, 0,f0, 4.0   , DARK], #12
-	    [0, 0,f0, 4.0   , BROAD], #13
-	    [0, -6,f0, 4.0   , BROAD], #14
+	    [ACT, 0,f0, 1, DARK], #0
+	    [ACT, 0,f0, 1, BROAD], #1 
+	    [ACT, -6,f0, 1, BROAD], #2
+	    [ACT, 0,f0, 1.69, DARK], #3
+	    [ACT, 0,f0, 1.69, BROAD], #4
+	    [ACT, -6,f0, 1.69, BROAD], #5
+	    [ACT, 0,f0, 2.25, DARK], #6
+	    [ACT, 0,f0, 2.25, BROAD], #7
+	    [ACT, -6,f0, 2.25, BROAD], #8
+	    [ACT, 0,f0, 2.89, DARK], #9
+	    [ACT, 0,f0, 2.89, BROAD], #10
+	    [ACT, -6,f0, 2.89, BROAD], #11
+	    [ACT, 0,f0, 4.0   , DARK], #12
+	    [ACT, 0,f0, 4.0   , BROAD], #13
+	    [ACT, -6,f0, 4.0   , BROAD], #14
 	    # HCT Stimuli
-	    [1, 0,f0, DARK, 0], #15  % second is freq ratio (1 = f0, 0.5 = f0/2)
-	    [1, 0,f0, BROAD,0], #16
-	    [1, 0,f0*2, DARK,1], #17
-	    [1, 0,f0*2, BROAD,1], #18
+	    [HCT, 0,f0, DARK, 0], #15  % second is freq ratio (1 = f0, 0.5 = f0/2)
+	    [HCT, 0,f0, BROAD,0], #16
+	    [HCT, 0,f0*2, DARK,1], #17
+	    [HCT, 0,f0*2, BROAD,1], #18
 	    # ACT Control
-	    [2, 0,f0, 4.0, DARK,0], #19
-	    [2, 0,f0, 4.0, BROAD,0], #20 
-	    [2, -6,2*f0, 4.0, DARK,1], #21
-	    [2, -6,2*f0, 4.0, DARK,1], #22
+	    [CONTROL, 0,f0, 4.0, DARK,0], #19
+	    [CONTROL, 0,f0, 4.0, BROAD,0], #20 
+	    [CONTROL, -6,2*f0, 4.0, DARK,1], #21
+	    [CONTROL, -6,2*f0, 4.0, BROAD,1], #22
 	    # Additional training
-	    [0, 0,f0, 9   , BROAD], #23
-   	    [0, 0,f0, 9   , DARK]]) #24
+	    [ACT, 0,f0, 9   , BROAD], #23
+   	    [ACT, 0,f0, 9   , DARK]]) #24
 
 	CorrectResp = np.array([[15,16,19,20],[17,18,21,22]]) # down / up
-
 	Calibration_sounds = [0,1,23,24]
 	Training_sounds = np.array([[0,1,23,24],[0,1,6,7,12,13]])
-
 	Training_duration = 300 # 5 minutes
 
 	def __init__(self):
@@ -88,9 +93,27 @@ class exp_param:
 		return order2
 
 	def isRespCorrect(self,i,thisResp):
-		if i in exp_param.CorrectResp[0]: # correct response is down
-			return (thisResp == -1) 
-		elif i in exp_param.CorrectResp[1]: # correct response is up
-			return (thisResp == 1)
+		if thisResp in [1,-1]: # key pressed is up or down
+
+			if i in exp_param.CorrectResp[0]: # correct response is down
+				if (thisResp == -1):
+					return 1 
+				else:
+					return 0
+			elif i in exp_param.CorrectResp[1]: # correct response is up
+				if (thisResp == 1):
+					return 1
+				else:
+					return 0
+			else:	# there was no correct or wrong response
+				return -1
 		else:
-			return False
+			return -1 # key miss
+
+	def isACT(self,i):
+		return (exp_param.Sound_array[i][0] == exp_param.ACT)
+	def isHCT(self,i):
+		return (exp_param.Sound_array[i][0] == exp_param.ACT)
+	def isCONTROL(self,i):
+		return (exp_param.Sound_array[i][0] == exp_param.ACT)
+
