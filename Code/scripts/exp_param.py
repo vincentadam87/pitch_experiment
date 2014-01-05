@@ -28,7 +28,7 @@ class exp_param:
 	CONTROL = 2
 
 	RATIO = [1,1.69,2.25,2.89,4]
-	
+
 	BROAD = 1
 	DARK = 0
 	fc_ACT_DARK = 3000 #
@@ -46,21 +46,21 @@ class exp_param:
 
 	Sound_array = np.array([
 	    # ACT Stimuli
-	    [ACT, 0,f0, 1, DARK], #0
-	    [ACT, 0,f0, 1, BROAD], #1 
-	    [ACT, -6,f0, 1, BROAD], #2
-	    [ACT, 0,f0, 1.69, DARK], #3
-	    [ACT, 0,f0, 1.69, BROAD], #4
-	    [ACT, -6,f0, 1.69, BROAD], #5
-	    [ACT, 0,f0, 2.25, DARK], #6
-	    [ACT, 0,f0, 2.25, BROAD], #7
-	    [ACT, -6,f0, 2.25, BROAD], #8
-	    [ACT, 0,f0, 2.89, DARK], #9
-	    [ACT, 0,f0, 2.89, BROAD], #10
-	    [ACT, -6,f0, 2.89, BROAD], #11
-	    [ACT, 0,f0, 4.0   , DARK], #12
-	    [ACT, 0,f0, 4.0   , BROAD], #13
-	    [ACT, -6,f0, 4.0   , BROAD], #14
+	    [ACT, 0,f0, RATIO[0], DARK], #0
+	    [ACT, 0,f0, RATIO[0], BROAD], #1 
+	    [ACT, -6,f0, RATIO[0], BROAD], #2
+	    [ACT, 0,f0, RATIO[1], DARK], #3
+	    [ACT, 0,f0, RATIO[1], BROAD], #4
+	    [ACT, -6,f0, RATIO[1], BROAD], #5
+	    [ACT, 0,f0, RATIO[2], DARK], #6
+	    [ACT, 0,f0, RATIO[2], BROAD], #7
+	    [ACT, -6,f0, RATIO[2], BROAD], #8
+	    [ACT, 0,f0, RATIO[3], DARK], #9
+	    [ACT, 0,f0, RATIO[3], BROAD], #10
+	    [ACT, -6,f0, RATIO[3], BROAD], #11
+	    [ACT, 0,f0, RATIO[4]   , DARK], #12
+	    [ACT, 0,f0, RATIO[4]   , BROAD], #13
+	    [ACT, -6,f0, RATIO[4]   , BROAD], #14
 	    # HCT Stimuli
 	    [HCT, 0,f0, DARK, 0], #15  % second is freq ratio (1 = f0, 0.5 = f0/2)
 	    [HCT, 0,f0, BROAD,0], #16
