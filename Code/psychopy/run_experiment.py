@@ -1,11 +1,11 @@
 from psychopy import core, visual, gui, data, event
 from psychopy.misc import fromFile, toFile
-import time, random
+
 from scipy.io.wavfile import write
 import numpy as np
 import pygame
 
-import os, sys, inspect
+import os, sys
 # realpath() with make your script run, even if you symlink it :)
 #cmd_subfolder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile( inspect.currentframe() ))[0]) + "/scripts")
 cmd_subfolder = os.path.realpath('..')+'/scripts'
@@ -46,30 +46,35 @@ def set_msg(txt,type):
         m = visual.TextStim(win,text=txt, pos=BOTTOM_POS,wrapWidth = 30)
     m.draw()    
     
+def playsound(s,vol,it=1):
+    scaled = np.int16(s * (2**9-1))#
+    write('test.wav', 44100, scaled)
+    pygame.mixer.init(frequency=44100, size=-16, channels=1, buffer=4096)
+    pygame.mixer.music.load("test.wav")
+    if not (vol == None):
+        pygame.mixer.music.set_volume(vol)
+    pygame.mixer.music.play(it)
+
 def run_calibration():
     # display instructions
     set_msg('SET SOUND LEVEL','TITLE')
     set_msg('press up and down to increase/decrease sound level and press enter when level is confortable','MAIN')
+    set_msg('Press return to continue','KEY')
+
     win.flip()
     # prepare calibration sound
-    level = Exp.level
     s = sound_build.make_lp_noise(100000,3000,Exp.rate)
-    scaled = np.int16(s*level)
-    write('test.wav', 44100, scaled)
-    # run calibration
-    pygame.mixer.init()
-    pygame.mixer.music.load("test.wav")
-    pygame.mixer.music.play(200)
-    pygame.mixer.music.set_volume(0.5)
+    vol = 0.5
+    playsound(s,vol,200)
     pressEnter = False
     while pressEnter==False:
         allKeys=event.waitKeys()
         for thisKey in allKeys:
             if thisKey=='up':
-                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()+0.1)
+                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()+0.03)
                 print(pygame.mixer.music.get_volume())
             elif thisKey=='down':
-                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()-0.1)
+                pygame.mixer.music.set_volume(pygame.mixer.music.get_volume()-0.03)
                 print(pygame.mixer.music.get_volume())
             elif thisKey in ['return']:
                 pressEnter = True
@@ -91,6 +96,7 @@ def display_instructions():
 
     set_msg('INSTRUCTIONS','TITLE')
     set_msg('press up or down to charaterize the melodic contour of the sound you hear : Up-Down or Down-Up (you will hear some examples during training sessions)','MAIN')
+    set_msg('Press any key to continue','KEY')
     win.flip()
     core.wait(0.5)
     event.waitKeys()
@@ -142,22 +148,15 @@ def run_training(session,duration):
     time_start = core.getTime()
     time_play = time_start
     time_stop = time_start + duration
-    N_stims = len(Exp.Training_sounds[session-1])
     while (core.getTime()<time_stop):
         
-        i = random.randint(1,N_stims)
-        s = sound_build.make_random_training_sound(session,Exp)
-        scaled = np.int16(s/np.max(np.abs(s)) * 32767)
-        write('test.wav', 44100, scaled)       
-        pygame.mixer.init(frequency=44100, size=-16, channels=1, buffer=4096)
-        pygame.mixer.music.set_volume(vol)
-        pygame.mixer.music.load("test.wav")
+        s = sound_build.make_random_training_sound(session,Exp)     
         core.wait(time_play - core.getTime())
         set_msg('Up or down?','MAIN')
         win.flip()        
-        pygame.mixer.music.play()        
-        
-        thisResp = get_response()
+        playsound(s,vol)
+        get_response()
+        print(core.getTime() -time_start)
         time_play =  core.getTime() + iti
         
 
@@ -165,26 +164,35 @@ def run_main_experiment():
     time_start = core.getTime()
     time_play = time_start
     order = Exp.make_random_stim_order()
-    for i in order[1:10]:
+    Nonethird = np.floor(len(order)/3)
+    Ntwothird = np.floor(2*len(order)/3)
+
+    t = 0
+    for i in order:
+        t = t+1
+        print(core.getTime() -time_start)
+        if t in [Nonethird,Ntwothird]:
+            set_msg('Short Break!','MAIN')
+            set_msg('Press return to continue','KEY')
+            win.flip()
+            event.waitKeys(keyList=['return','space'])
+            core.wait(1) 
+
+
+
         s = sound_build.make_noisy_stim(i,Exp)
         scaled = np.int16(s/np.max(np.abs(s)) * 32767)
         write('test.wav', 44100, scaled)
-        core.wait(0.2) 
-        pygame.mixer.init(frequency=44100, size=-16, channels=1, buffer=4096)
-        pygame.mixer.music.set_volume(vol)
-        pygame.mixer.music.load("test.wav")
-        core.wait(time_play - core.getTime())
-        
+        core.wait(time_play - core.getTime())        
         set_msg('Up or down?','MAIN')
         win.flip()        
-        pygame.mixer.music.play()
-        core.wait(1) 
+        playsound(s,vol)
+        core.wait(0.1) 
         #core.wait(0.5) #wait 500ms; but use a loop of x frames for more accurate timing in fullscreen
         thisResp = get_response()
-        iscorrect = int(Exp.isRespCorrect(i,thisResp)) # bool to int to write in file
+        iscorrect = Exp.isRespCorrect(i,thisResp) # 1=correct, O=incorrect, -1=missed
         time_play =  core.getTime() + iti
         dataFile.write('%i,%i,%i\n' %(i, thisResp,iscorrect))
-        core.wait(1)
     dataFile.close()
 
 
@@ -213,7 +221,7 @@ vol = run_calibration()
 display_instructions() 
 
 ######### TRAINING Sessions #######################
-training_duration = 5
+training_duration = Exp.Training_duration
 
 
 set_msg('TRAINING SESSIONS','TITLE')
@@ -236,7 +244,7 @@ set_msg('Press enter to continue','KEY')
 win.flip()
 event.waitKeys(keyList=['return'])
 
-set_msg('SESSION 1','TITLE')
+set_msg('SESSION 2','TITLE')
 set_msg('Press enter to begin','KEY')
 win.flip()
 event.waitKeys(keyList=['return'])
@@ -250,7 +258,7 @@ event.waitKeys(keyList=['return'])
 
 ############## Main experiment ##################
 set_msg('MAIN EXPERIMENT','TITLE')
-set_msg('You will now start the main experiment','MAIN')
+set_msg('You will now start the main experiment. You will hear a greater variety of sounds than in the training sessions','MAIN')
 set_msg('Press return to start','KEY')
 win.flip()
 event.waitKeys(keyList=['return'])
