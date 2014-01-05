@@ -4,42 +4,38 @@ import numpy as np
 import random 
 class exp_param:
 
-	# Global parameters
+	# Target/flanker sound parameters
 	rate = 44100 #44.1 khz, the sampling rate
-	f0 =250 
-	fi = f0*np.sqrt(2)
+	f0 =250 # lowest fundamental in octave pair
+	fi = f0*np.sqrt(2) # half way between f0 and 2*f0
+	duration_stim =0.06 # total duration of stimulus in sec
+	RATIO = [1,1.69,2.25,2.89,4] # ratio of alternating click-trains
+	harmonics_flanker = [3,20] # harmonics chosen to best match timbre of target alternating click trains
+	fc_ACT_DARK = 3000 # for butterworth filter
+	fc_HCT_DARK = 3500 # for hard cut of harmonics higher in HCT
+	fc_HCT_BROAD = 20000 # for hard cut of harmonics higher in HCT
+
+	# Stimulus structure
+	interval = 0.1 # blank interval length between flankers and target
+	se_blank_duration = 0.01 # extra milliseconds at sound onset and offset
+	duration_tot = 3*duration_stim + 2*interval + 2*se_blank_duration #0.38  
+	f_c_noise = 1000 # cut-off frequency for noise
+	level = 1000
+
 	# Experiment structure
 	N_stim = 23 # total number of stim
-	N_rep = 1 # number of repetition per stim
-	# Stimulus parameters
-	interval = 0.1
-	se_blank_duration = 0.01
+	N_rep = 10 # number of repetition per stim (Hehrmann 30)
+	iti = 1 # time between response and begining of next trial
+	Training_duration = 60 #120 # 300 =5 minutes
 
-	# task parameters
-	iti = 1
-	
-	duration_stim =0.06 # total duration of stimulus in sec
-	duration_tot = 3*duration_stim + 2*interval + 2*se_blank_duration #0.38  
-	
-	### ACT & HCT
-
+	# Constants
 	ACT = 0
 	HCT = 1
 	CONTROL = 2
-
-	RATIO = [1,1.69,2.25,2.89,4]
-
 	BROAD = 1
 	DARK = 0
-	fc_ACT_DARK = 3000 #
-	fc_HCT_DARK = 3500 #
-	fc_HCT_BROAD = 20000 #
-	### Flanker
-	harmonics_flanker = [3,20] # harmonics chosen to best match timbre of target alternating click trains
-	# noise characteristics
-	f_c_noise = 1000
-
-	level = 1000
+	CORRECT_UP = 1
+	CORRECT_DOWN = 0
 	
 	time_stim = np.arange(0,np.floor(duration_tot*rate))/rate
 	time_target = np.arange(0,np.floor(duration_stim*rate))/rate
@@ -62,26 +58,24 @@ class exp_param:
 	    [ACT, 0,f0, RATIO[4]   , BROAD], #13
 	    [ACT, -6,f0, RATIO[4]   , BROAD], #14
 	    # HCT Stimuli
-	    [HCT, 0,f0, DARK, 0], #15  % second is freq ratio (1 = f0, 0.5 = f0/2)
-	    [HCT, 0,f0, BROAD,0], #16
-	    [HCT, 0,f0*2, DARK,1], #17
-	    [HCT, 0,f0*2, BROAD,1], #18
+	    [HCT, 0,f0, DARK, CORRECT_DOWN], #15  % second is freq ratio (1 = f0, 0.5 = f0/2)
+	    [HCT, 0,f0, BROAD,CORRECT_DOWN], #16
+	    [HCT, 0,f0*2, DARK,CORRECT_UP], #17
+	    [HCT, 0,f0*2, BROAD,CORRECT_UP], #18
 	    # ACT Control
-	    [CONTROL, 0,f0, 4.0, DARK,0], #19
-	    [CONTROL, 0,f0, 4.0, BROAD,0], #20 
-	    [CONTROL, -6,2*f0, 4.0, DARK,1], #21
-	    [CONTROL, -6,2*f0, 4.0, BROAD,1], #22
+	    [CONTROL, 0,f0, RATIO[4] , DARK,CORRECT_DOWN], #19
+	    [CONTROL, 0,f0, RATIO[4] , BROAD,CORRECT_DOWN], #20 
+	    [CONTROL, -6,2*f0, RATIO[4] , DARK,CORRECT_UP], #21
+	    [CONTROL, -6,2*f0, RATIO[4] , BROAD,CORRECT_UP], #22
 	    # Additional training
-	    [ACT, 0,f0, 9   , BROAD], #23
+	    [ACT, 0,f0, 9    , BROAD], #23
    	    [ACT, 0,f0, 9   , DARK]]) #24
 
 	CorrectResp = np.array([[15,16,19,20],[17,18,21,22]]) # down / up
 	Calibration_sounds = [0,1,23,24]
 	Training_sounds = np.array([[0,1,23,24],[0,1,6,7,12,13]])
-	Training_duration = 300 # 5 minutes
 
 	def __init__(self):
-
 		pass
 
 	def make_random_stim_order(self):
