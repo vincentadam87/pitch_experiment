@@ -1,6 +1,6 @@
 # data
 *.wav
-
+*.csv
 # python
 *.pyc
 
