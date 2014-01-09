@@ -204,10 +204,20 @@ def make_noisy_stim(i,exp):
     y = y+10**(-snrdb/20)*make_lp_noise(len(y),f_c_noise,rate)
     return y
 
+def add_lpnoise_at_snrdb(x,snrdb,exp):
+    # loading parameters
+    rate = exp.rate
+    Sound_array = exp.Sound_array
+    f_c_noise = exp.f_c_noise
+    y = x+10**(-snrdb/20)*make_lp_noise(len(x),f_c_noise,rate)
+    return y
+
 def make_random_training_sound(session,exp):
     indices = exp.Training_sounds[session-1]
     N_indices = len(indices)
     i = random.randint(1,N_indices)
     return make_noisy_stim(indices[i-1],exp)
     
+
+# ---------- Addition for ABX task
 
