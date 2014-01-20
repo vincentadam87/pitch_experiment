@@ -77,6 +77,38 @@ def hct(f,t,k):
         y = y + normedsin(i*f,t);
     return np.divide(y,len(k))
 
+def ABABl(f,l,timbre,t):
+    # enveloppe
+    fsamp = 1/(t[1]-t[0])
+    T_omega = 1/float(f) #  
+    N_omega = fsamp/f
+    t_omega = np.linspace(0, T_omega*f, N_omega)
+    N_mid = int(N_omega/2)
+    N_10 = int(N_omega/10)
+    t_10 = t_omega[0:N_10-1]
+    T_10 = t_10[-1]
+    env = np.ones(len(t_omega))
+    env[0:N_10-1] = np.sin(np.pi*t_10/T_10/2)
+    env[-N_10+1:] = 1-np.sin(np.pi*t_10/T_10/2)
+
+    # filters
+    (af,bf) = filt.make_low_pass_butterworth(timbre, 6,fsamp)
+
+    # sounds
+    A = np.random.normal(size=N_omega)
+    B = np.random.normal(size=N_omega)
+    C = A*l + (1-l)*B
+
+    A_filt = filt.apply_filter(A,af,bf)*env
+    B_filt = filt.apply_filter(B,af,bf)*env
+    C_filt = A_filt*l + (1-l)*B_filt
+
+    N_rep = int(fsamp*t[-1]/N_omega) +1# repeat for a sec
+
+    AB = np.tile(np.concatenate((A_filt,C_filt),1), N_rep/2)
+    return AB[0:len(t)]
+
+
 # -----------------------------------------------------------------
 # ------------ Sound generation functions (Experiment dependent)
 # -----------------------------------------------------------------
@@ -146,6 +178,20 @@ def make_hct_target(f,timbre,exp):
     time_stim = make_time(duration_stim,rate)
     return normalize(hct(f,time_stim,k)) # no filtering
 
+def make_ABABl_target(f,lmbda,timbre,exp):
+    # loading parameters
+    duration_stim = exp.duration_stim
+    rate = exp.rate
+    # function
+
+    if (timbre == exp.DARK):
+        f_c = exp.fc_HCT_DARK
+    if (timbre == exp.BROAD):
+        f_c = exp.fc_HCT_BROAD
+
+    time_stim = make_time(duration_stim,rate)
+    return normalize(ABABl(f,lmbda,f_c,time_stim))     
+
     
 # stim is as follows : flanker (60ms), blank (100ms), target (60ms), blank (100ms), flanker (60ms)
 def make_triplet(flanker,target,exp):
@@ -185,9 +231,17 @@ def make_target(i,exp):
         timbre = stim_op[4]
         target = make_act_control(ratio,f,timbre,exp)
         name = "ACT control [-,snrdb,-,ratio (one CT only),timbre]"
+    if (stim_type == 3): # ABAB
+        f = stim_op[2]
+        lmbda = stim_op[3]
+        timbre = stim_op[4]
+        target = make_ABABl_target(f,lmbda,timbre,exp)
+        name = "ABAB [-,snrdb,-,lmbda ,timbre]"
     print(name)
     print(stim_op)
     return target
+
+
 
 
 # noise is added assuming a signal std of 1

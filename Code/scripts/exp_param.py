@@ -10,6 +10,9 @@ class exp_param:
 	fi = f0*np.sqrt(2) # half way between f0 and 2*f0
 	duration_stim =0.06 # total duration of stimulus in sec
 	RATIO = [1,1.69,2.25,2.89,4] # ratio of alternating click-trains
+	Lmbda = [0.2,0.4,0.6,0.8] # ratio of alternating click-trains
+
+
 	harmonics_flanker = [3,20] # harmonics chosen to best match timbre of target alternating click trains
 	fc_ACT_DARK = 3000 # for butterworth filter
 	fc_HCT_DARK = 3500 # for hard cut of harmonics higher in HCT
@@ -23,8 +26,7 @@ class exp_param:
 	level = 1000
 
 	# Experiment structure
-	N_stim = 23 # total number of stim
-	N_rep = 10 # number of repetition per stim (Hehrmann 30)
+	N_rep = 20 # number of repetition per stim (Hehrmann 30)
 	iti = 1 # time between response and begining of next trial
 	Training_duration = 60 #120 # 300 =5 minutes
 
@@ -32,6 +34,8 @@ class exp_param:
 	ACT = 0
 	HCT = 1
 	CONTROL = 2
+	ABAB = 3
+
 	BROAD = 1
 	DARK = 0
 	CORRECT_UP = 1
@@ -69,11 +73,28 @@ class exp_param:
 	    [CONTROL, -6,2*f0, RATIO[4] , BROAD,CORRECT_UP], #22
 	    # Additional training
 	    [ACT, 0,f0, 9    , BROAD], #23
-   	    [ACT, 0,f0, 9   , DARK]]) #24
+   	    [ACT, 0,f0, 9   , DARK], #24
+	    # ABAB
+	    [ABAB, 0,f0, Lmbda[0]    , DARK], #25
+	    [ABAB, 0,f0, Lmbda[0]    , BROAD], #26
+	    [ABAB, -6,f0, Lmbda[0]    , BROAD], #27
+	    [ABAB, 0,f0, Lmbda[1]    , DARK], #28 
+	    [ABAB, 0,f0, Lmbda[1]    , BROAD], #29
+	    [ABAB, -6,f0, Lmbda[1]    , BROAD], #30
+	    [ABAB, 0,f0, Lmbda[2]    , DARK], #31
+	    [ABAB, 0,f0, Lmbda[2]    , BROAD], #32
+	    [ABAB, -6,f0, Lmbda[2]    , BROAD], #33
+	    [ABAB, 0,f0, Lmbda[3]    , DARK], #35
+	    [ABAB, 0,f0, Lmbda[3]    , BROAD], #36
+	    [ABAB, -6,f0, Lmbda[3]    , BROAD]]) #37
+
 
 	CorrectResp = np.array([[15,16,19,20],[17,18,21,22]]) # down / up
 	Calibration_sounds = [0,1,23,24]
 	Training_sounds = np.array([[0,1,23,24],[0,1,6,7,12,13]])
+	Ambi_exp_sounds = np.arange(25,41)
+	Tests_exp_sounds = np.arange(15,19)
+	Main_exp_sounds = np.concatenate((Tests_exp_sounds,Ambi_exp_sounds),1)
 
 	def __init__(self):
 		pass
@@ -81,7 +102,8 @@ class exp_param:
 	def make_random_stim_order(self):
 		# 23 stim, repeated 30 times each = 690 trials
 		#The numpy equivalent of repmat(a, m, n) is tile(a, (m, n)).
-		order1 =np.tile(np.arange(0,exp_param.N_stim),(exp_param.N_rep,1))
+		N_stim = len(exp_param.Main_exp_sounds)
+		order1 =np.tile(exp_param.Main_exp_sounds,(exp_param.N_rep,1))
 		order2 = np.concatenate(order1,axis=0)
 		random.shuffle(order2)
 		return order2
@@ -110,4 +132,5 @@ class exp_param:
 		return (exp_param.Sound_array[i][0] == exp_param.ACT)
 	def isCONTROL(self,i):
 		return (exp_param.Sound_array[i][0] == exp_param.ACT)
-
+	def isABAB(self,i):
+		return (exp_param.Sound_array[i][0] == exp_param.ABAB)

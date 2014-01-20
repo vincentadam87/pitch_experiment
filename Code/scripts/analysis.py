@@ -85,47 +85,51 @@ def perform_analysis(filename):
 	    x = CORRECT_hct[i_index]
 	    accuracy_control[i_index] = a**x*(1-a)**(1-x)
 
-	# Make psychometric curve for ACTs
-
-	INDEX_act = np.arange(0,15) # [0...14]
-	counts_act = np.zeros((len(INDEX_act),3),float) # 3 timbre/snr,  5 ratios, 3 possible responses
+	# Make psychometric curve for mains
+	Exp = exp_param.exp_param()
 
 
-	# Extract counts for ACTs
+	INDEX_ambi = Exp.Ambi_exp_sounds  # [0...14] for ACT
+
+	N_ambi = len(INDEX_ambi)
+	counts_ambi = np.zeros((N_ambi,3),float) # 3 timbre/snr,  5 ratios, 3 possible responses
+
+
+	# Extract counts for mains
 	i_index = -1
-	for index in INDEX_act:
+	for index in INDEX_ambi:
 	    i_index += 1
 	    for row in y:
 	        if (row[0] == index):
 	            if (row[1] == 1): #pressed up
-	                counts_act[i_index,0] += 1 
+	                counts_ambi[i_index,0] += 1 
 	            elif (row[1] == -1): #pressed down
-	                counts_act[i_index,1] += 1 
+	                counts_ambi[i_index,1] += 1 
 	            else:# pressed other key (miss)#psy_curve = np.zeros((3,5)) # cond * ratio
 
-	                counts_act[i_index,2] += 1
+	                counts_ambi[i_index,2] += 1
 
-	# Compute Accuracy for ACT
-	accuracy_act = np.zeros((len(INDEX_act)),float)
+	# Compute Accuracy for main
+	accuracy_ambi = np.zeros((len(INDEX_ambi)),float)
 	i_index = -1
-	for row in counts_act:
+	for row in counts_ambi:
 	    i_index += 1
-	    accuracy_act[i_index] = row[0]/(row[0]+row[1])
+	    accuracy_ambi[i_index] = row[0]/(row[0]+row[1])
 
 	# Merge accuracies to build psychometric curves
 	# indices of sounds of increasing ratio for the 3 conditions
-	ind_by_cond = [np.arange(0,15,3),
-	               np.arange(1,15,3),
-	               np.arange(2,15,3)]
+	ind_by_cond = [np.arange(0,N_ambi,3),
+	               np.arange(1,N_ambi,3),
+	               np.arange(2,N_ambi,3)]
 
 
-	psy_curve = [[accuracy_act[index] for index in row] for row in ind_by_cond]
-	psy_curve_std = [[accuracy_act[index]*(1-accuracy_act[index]) for index in row] for row in ind_by_cond]
+	psy_curve = [[accuracy_ambi[index] for index in row] for row in ind_by_cond]
+	psy_curve_std = [[accuracy_ambi[index]*(1-accuracy_ambi[index]) for index in row] for row in ind_by_cond]
 
 	# compute std
 	std_control = ((1-accuracy_control)*accuracy_control)
 	std_hct = ((1- accuracy_hct)*accuracy_hct)
-	std_act= ((1- accuracy_act)*accuracy_act)
+	std_ambi= ((1- accuracy_ambi)*accuracy_ambi)
 
 
 	#########################################
@@ -146,11 +150,11 @@ def perform_analysis(filename):
 	controlf500m = accuracy_control[[1,3]]
 	controlf500std = std_control[[1,3]]
 
-	print(counts_act)
+	print(counts_ambi)
 	print(counts_hct)
 	print(counts_control)
 
-	print(accuracy_act)
+	print(accuracy_ambi)
 	print(accuracy_hct)
 	print(accuracy_control)
 
@@ -160,7 +164,6 @@ def perform_analysis(filename):
 	print(controlf500m)
 
 
-	Exp = exp_param.exp_param()
 
 	RATIO = Exp.RATIO
 
@@ -206,7 +209,7 @@ def perform_analysis(filename):
 	ax3.set_xlabel('ratio')
 	ax3.set_ylabel('fraction high')
 	ax3.grid(True)
-	ax3.set_title('Timbral effects, ACT')
+	ax3.set_title('Timbral effects, main')
 
 	plt.ioff()
 	plt.ylim(0,1)

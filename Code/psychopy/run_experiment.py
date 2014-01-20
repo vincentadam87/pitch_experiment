@@ -206,10 +206,11 @@ expInfo = get_subject_info()
 
 fileName = expInfo['pseudo'] + expInfo['date']
 dataFile = open('../data/'+fileName+'.csv', 'w')#a simple text file with 'comma-separated-values'
-dataFile.write('stim index,chosen dir\n')
+dataFile.write('stim index,chosen dir,correct\n')
 
 #create window and stimuli
-win = visual.Window([800,600],fullscr=True,allowGUI=True, monitor='testMonitor', units='deg')
+#win = visual.Window([800,600],fullscr=True,allowGUI=True, monitor='testMonitor', units='deg')
+win = visual.Window([800,600],fullscr=False,allowGUI=True, monitor='testMonitor', units='deg')
 
 #and some handy clocks to keep track of timemake_random_stim_order
 globalClock = core.Clock()
