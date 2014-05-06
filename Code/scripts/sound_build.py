@@ -3,7 +3,7 @@
 import numpy as np
 import filtering as filt
 import random
-
+from scipy.signal import hilbert, convolve
 # -----------------------------------------------------------------
 # ------------ Base functions (Experiment independent)
 # -----------------------------------------------------------------
@@ -15,7 +15,6 @@ def normalize(x):
 # shift signal by half period
 def half_period_shift(x,f0,rate):
     y = np.zeros(len(x))
-    omega= 1/f0;
     T2 = int(np.floor(rate/f0/2));
     y[0:-T2:] += x[T2::]
     return y
@@ -53,7 +52,6 @@ def normedsin(f,t):
 
 # Dirac comb amplitude 1
 def dirac_comb(f,t):
-    omega= 1/f;
     rate = 1/(t[1]-t[0])
     T = int(np.floor(rate/f));
     k = int(np.ceil(len(t)/T));
@@ -77,36 +75,60 @@ def hct(f,t,k):
         y = y + normedsin(i*f,t);
     return np.divide(y,len(k))
 
-def ABABl(f,l,timbre,t):
-    # enveloppe
-    fsamp = 1/(t[1]-t[0])
-    T_omega = 1/float(f) #  
-    N_omega = fsamp/f
-    t_omega = np.linspace(0, T_omega*f, N_omega)
-    N_mid = int(N_omega/2)
-    N_10 = int(N_omega/10)
-    t_10 = t_omega[0:N_10-1]
-    T_10 = t_10[-1]
-    env = np.ones(len(t_omega))
-    env[0:N_10-1] = np.sin(np.pi*t_10/T_10/2)
-    env[-N_10+1:] = 1-np.sin(np.pi*t_10/T_10/2)
+def ABAB(A,B,f,t):
+    rate = 1/(t[1]-t[0])
+    y = np.zeros(len(t))
+    c1 = dirac_comb(f,t)
+    c2 = half_period_shift(dirac_comb(f,t),f,rate)
+    y1 = convolve(A,c1)
+    y2 = convolve(B,c2)
+    y = y1+ y2
+    return y[0:len(t)]
 
-    # filters
-    (af,bf) = filt.make_low_pass_butterworth(timbre, 6,fsamp)
+def ABABl(f,l,timbre,t,fs):
+    Np = int(fs/f/2.*0.8)
+    A = np.random.randn(Np)
+    B = np.random.randn(Np)
+    C = l*A+(1-l)*B
+    y = ABAB(A,C,f,t)
+    (af,bf) = filt.make_low_pass_butterworth(timbre, 6,fs)
+    y = filt.apply_filter(y,af,bf)
+    return y[0:len(t)]
 
-    # sounds
-    A = np.random.normal(size=N_omega)
-    B = np.random.normal(size=N_omega)
-    C = A*l + (1-l)*B
-
-    A_filt = filt.apply_filter(A,af,bf)*env
-    B_filt = filt.apply_filter(B,af,bf)*env
-    C_filt = A_filt*l + (1-l)*B_filt
-
-    N_rep = int(fsamp*t[-1]/N_omega) +1# repeat for a sec
-
-    AB = np.tile(np.concatenate((A_filt,C_filt),1), N_rep/2)
-    return AB[0:len(t)]
+#def ABABl(f,l,timbre,t):
+#    fsamp = 1/(t[1]-t[0])
+#    T_omega = 1/float(f) #  
+#    N_omega = fsamp/f
+#    t_omega = np.linspace(0, T_omega*f, N_omega)
+#    # enveloppe
+#    N_env = int(N_omega/4)  # in proportion of period
+#    t_env = t_omega[0:N_env-1]
+#    T_env = t_env[-1]
+#    env = np.ones(len(t_omega))
+#    env[0:N_env-1] = 1/2-np.cos(np.pi*t_env/T_env)
+#    env[-N_env+1:] = np.cos(np.pi*t_env/T_env)
+#    env = (env +1)/2
+#    env = env**2
+#    # filters
+#    (af,bf) = filt.make_low_pass_butterworth(timbre, 6,fsamp)#
+#
+#    # sounds
+#    #A = np.random.normal(size=N_omega)
+#    time_env = np.arange(len(env))/fsamp
+#    A = hct(f,time_env,[0,20])
+#    #B = np.random.normal(size=N_omega)
+#    B = np.imag(hilbert(A))
+#
+#    # Filtering after modulating
+#    #env = np.ones(env.shape)
+#    A_filt = filt.apply_filter(A*env,af,bf)
+#    B_filt = filt.apply_filter(B*env,af,bf)
+#    C_filt = A_filt*l + (1-l)*B_filt
+#
+#    N_rep = int(fsamp*t[-1]/N_omega) +1# repeat for a sec#
+#
+#    AB = np.tile(np.concatenate((A_filt,C_filt),1), N_rep/2)
+#    return AB[0:len(t)]
 
 
 # -----------------------------------------------------------------
@@ -190,7 +212,7 @@ def make_ABABl_target(f,lmbda,timbre,exp):
         f_c = exp.fc_HCT_BROAD
 
     time_stim = make_time(duration_stim,rate)
-    return normalize(ABABl(f,lmbda,f_c,time_stim))     
+    return normalize(ABABl(f,lmbda,f_c,time_stim,rate))     
 
     
 # stim is as follows : flanker (60ms), blank (100ms), target (60ms), blank (100ms), flanker (60ms)
@@ -261,12 +283,12 @@ def make_noisy_stim(i,exp):
 def add_lpnoise_at_snrdb(x,snrdb,exp):
     # loading parameters
     rate = exp.rate
-    Sound_array = exp.Sound_array
     f_c_noise = exp.f_c_noise
     y = x+10**(-snrdb/20)*make_lp_noise(len(x),f_c_noise,rate)
     return y
 
 def make_random_training_sound(session,exp):
+    print exp.Training_sounds
     indices = exp.Training_sounds[session-1]
     N_indices = len(indices)
     i = random.randint(1,N_indices)

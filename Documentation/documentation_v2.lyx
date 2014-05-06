@@ -223,19 +223,9 @@ Construction
 \end_layout
 
 \begin_layout Itemize
-Not finally decided between
+A,B independent white noise 
 \end_layout
 
-\begin_deeper
-\begin_layout Itemize
-A,B independent white noise
-\end_layout
-
-\begin_layout Itemize
-B = Hilbert(A)
-\end_layout
-
-\end_deeper
 \begin_layout Itemize
 filtering (
 \begin_inset Formula $\textbf{dark}$
@@ -383,7 +373,7 @@ session 1: ACAC(
 \end_layout
 
 \begin_layout Itemize
-session 2: ACTs with 
+session 2: ACACs with 
 \begin_inset Formula $\lambda\in\{0,0.2,0.4,0.6,0.8,1\}$
 \end_inset
 

@@ -6,11 +6,11 @@ class exp_param:
 
 	# Target/flanker sound parameters
 	rate = 44100 #44.1 khz, the sampling rate
-	f0 =250 # lowest fundamental in octave pair
+	f0 =250. # lowest fundamental in octave pair
 	fi = f0*np.sqrt(2) # half way between f0 and 2*f0
 	duration_stim =0.06 # total duration of stimulus in sec
 	RATIO = [1,1.69,2.25,2.89,4] # ratio of alternating click-trains
-	Lmbda = [0.2,0.4,0.6,0.8] # ratio of alternating click-trains
+	Lmbda = [0,0.2,0.4,0.6,0.8,1] # ratio of alternating click-trains
 
 
 	harmonics_flanker = [3,20] # harmonics chosen to best match timbre of target alternating click trains
@@ -27,8 +27,9 @@ class exp_param:
 
 	# Experiment structure
 	N_rep = 20 # number of repetition per stim (Hehrmann 30)
+
 	iti = 1 # time between response and begining of next trial
-	Training_duration = 60 #120 # 300 =5 minutes
+	Training_duration = 20 #120 # 300 =5 minutes
 
 	# Constants
 	ACT = 0
@@ -86,15 +87,30 @@ class exp_param:
 	    [ABAB, -6,f0, Lmbda[2]    , BROAD], #33
 	    [ABAB, 0,f0, Lmbda[3]    , DARK], #35
 	    [ABAB, 0,f0, Lmbda[3]    , BROAD], #36
-	    [ABAB, -6,f0, Lmbda[3]    , BROAD]]) #37
-
+	    [ABAB, -6,f0, Lmbda[3]    , BROAD], #37
+	   	[ABAB, 0,f0, Lmbda[4]    , DARK], #38
+	    [ABAB, 0,f0, Lmbda[4]    , BROAD], #39
+	    [ABAB, -6,f0, Lmbda[4]    , BROAD],#40
+	    [ABAB, 0,f0, Lmbda[5]    , DARK], #41
+	    [ABAB, 0,f0, Lmbda[5]    , BROAD], #42
+	    [ABAB, -6,f0, Lmbda[5]    , BROAD]]) #43
 
 	CorrectResp = np.array([[15,16,19,20],[17,18,21,22]]) # down / up
-	Calibration_sounds = [0,1,23,24]
-	Training_sounds = np.array([[0,1,23,24],[0,1,6,7,12,13]])
-	Ambi_exp_sounds = np.arange(25,41)
+
+# previous version with ACT
+	#Calibration_sounds = [0,1,23,24]
+	#Training_sounds = np.array([[0,1,23,24],[0,1,6,7,12,13]])
+	#Ambi_exp_sounds = np.arange(25,41)
+	#Tests_exp_sounds = np.arange(15,19)
+	#Main_exp_sounds = np.concatenate((Tests_exp_sounds,Ambi_exp_sounds),1)
+
+# new version ABAB
+	Calibration_sounds = [25,26,42,43]
+	Training_sounds =  [range(25,27)+range(41,43),range(25,30)+range(38,43)]
+	Ambi_exp_sounds = np.arange(25,43)
 	Tests_exp_sounds = np.arange(15,19)
 	Main_exp_sounds = np.concatenate((Tests_exp_sounds,Ambi_exp_sounds),1)
+
 
 	def __init__(self):
 		pass
@@ -102,7 +118,6 @@ class exp_param:
 	def make_random_stim_order(self):
 		# 23 stim, repeated 30 times each = 690 trials
 		#The numpy equivalent of repmat(a, m, n) is tile(a, (m, n)).
-		N_stim = len(exp_param.Main_exp_sounds)
 		order1 =np.tile(exp_param.Main_exp_sounds,(exp_param.N_rep,1))
 		order2 = np.concatenate(order1,axis=0)
 		random.shuffle(order2)
