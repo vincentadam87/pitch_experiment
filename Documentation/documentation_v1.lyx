@@ -1,0 +1,453 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Timbral effects on the perception of ambiguous pitch
+\end_layout
+
+\begin_layout Author
+Vincent Adam
+\end_layout
+
+\begin_layout Section
+Aim & Motivation
+\end_layout
+
+\begin_layout Standard
+From Philipp Hehrmann's thesis:
+\end_layout
+
+\begin_layout Standard
+The most common type of errors in pitch judgements, aside from small deviations
+ around the true pitch due to limited discriminability, are octave mistakes.
+ These errors are strongly influenced by brightness of stimulus timbre.
+ Here we study these influences - that is how brightness influences the
+ way humans resolve ambiguity - for stimuli of fixed pitch chroma and varied
+ brighness.
+ 
+\end_layout
+
+\begin_layout Section
+Task description
+\end_layout
+
+\begin_layout Standard
+In each trial, subjects are presented an A-B-A sound triplet where A is
+ a flanker and B a target stimulus.
+ They are asked to judge the shape of the melodic contour as either rising-falli
+ng (
+\begin_inset Formula $\nearrow\searrow$
+\end_inset
+
+) or falling-rising (
+\begin_inset Formula $\searrow\nearrow$
+\end_inset
+
+).
+ No feedback is given given.
+\end_layout
+
+\begin_layout Standard
+Trial description: 
+\end_layout
+
+\begin_layout Itemize
+Inter-trial interval (time between response and next stimulus onset) = 1s
+ 
+\end_layout
+
+\begin_layout Itemize
+stimulus duration = 400 ms
+\end_layout
+
+\begin_layout Itemize
+stimulus structure: B (10ms) - F (60ms) - B (100ms) - T (60ms) - B (100ms)
+ - F (60ms) - B (10ms), with B=Blank, F=Flanker, T=Target 
+\end_layout
+
+\begin_layout Subsection
+Calibration
+\end_layout
+
+\begin_layout Standard
+Subjects are given the opportunity to choose a confortable sound level while
+ listening to non ambiguous ACTs (ratio 1 and 9) with 0dB noise.
+ Once chosen, the level is kept fixed for the rest of the experiment.
+\end_layout
+
+\begin_layout Subsection
+Training
+\end_layout
+
+\begin_layout Standard
+Subjects are presented the instructions and start with two training sessions.
+ Those sessions differ from the main task in the variety of presented targets
+ only
+\end_layout
+
+\begin_layout Itemize
+session 1: ACTs with ratios 1 and 9 (with 0dB noise) 
+\end_layout
+
+\begin_layout Itemize
+session 2: ACTs with ratios 1, 2.25 and 4 (with 0dB noise) 
+\end_layout
+
+\begin_layout Standard
+Each session lasts 5 minutes.
+\end_layout
+
+\begin_layout Subsection
+Main Task
+\end_layout
+
+\begin_layout Standard
+In the main task the 23 different stimuli are presented 30 times each in
+ a randomized order.
+ 
+\end_layout
+
+\begin_layout Section
+Detailed Instructions
+\end_layout
+
+\begin_layout Standard
+In each trial, subjects are asked to judge the shape of the melodic contour
+ the A-B-A sound presented as either rising-falling (
+\begin_inset Formula $\nearrow\searrow$
+\end_inset
+
+) or falling-rising (
+\begin_inset Formula $\searrow\nearrow$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Subjects are told that the purpose of the experiment is to probe their subjectiv
+e perceptual experience and that there is no strictly right or wrong response
+ in any trial.
+\end_layout
+
+\begin_layout Standard
+Subjects are also informed that they are likely to experience ambiguous
+ stimuli in which case they should make a quick decision according to their
+ best judgement.
+\end_layout
+
+\begin_layout Standard
+Subject are furthemore instructed that the stimuli are independent form
+ trial to trial and not influenced by their previous choices in any way,
+ and that long sequences of identically shaped triplets may occur simply
+ by chance.
+\end_layout
+
+\begin_layout Subsection
+Flanker
+\end_layout
+
+\begin_layout Standard
+Missing fundamental HCT at 
+\begin_inset Formula $f_{i}=\frac{f_{0}}{\sqrt{(}2)}$
+\end_inset
+
+, half an octave between the two possible target fundamental frequencies
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $f_{i}=353Hz$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+Harmonics 
+\begin_inset Formula $3-20$
+\end_inset
+
+, sine phase, equal amplitude (harmonics chosen to match target ACT timbre)
+\end_layout
+
+\begin_layout Standard
+Flankers evoke a strong and unambiguous pitch at 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Harmonic convention: 
+\begin_inset Formula $i^{th}$
+\end_inset
+
+ harmonics is at frequency 
+\begin_inset Formula $i\times f_{0}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Targets
+\end_layout
+
+\begin_layout Standard
+There are 2 main types of targets: Harmonic complex tones (HCTs) and Alternating
+ click trains (ACTs).
+ 
+\end_layout
+
+\begin_layout Subsubsection
+ACTs ( 
+\begin_inset Formula $5\text{ ratios }\times3\text{ (SNR,timbre) }=15$
+\end_inset
+
+ )
+\end_layout
+
+\begin_layout Itemize
+ratios = 
+\begin_inset Formula $1,\quad1.69,\quad2.25,\quad2.89,\quad4$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+(SNR,timbre) = (0dB,broad) , (-6dB, broad) , (0dB, dark) 
+\end_layout
+
+\begin_layout Itemize
+Construction 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Harmonics 
+\begin_inset Formula $1-20$
+\end_inset
+
+, sine phase, equal amplitude 
+\begin_inset Formula $\textbf{(\ensuremath{=1})}$
+\end_inset
+
+ 
+\begin_inset Formula $\to$
+\end_inset
+
+ corresponds to the 
+\begin_inset Formula $\textbf{broad}$
+\end_inset
+
+ timbre 
+\end_layout
+
+\begin_layout Itemize
+filtering (
+\begin_inset Formula $\textbf{dark}$
+\end_inset
+
+ only): LP filter, Butterworth : 
+\begin_inset Formula $f_{cut}=3000Hz$
+\end_inset
+
+, 
+\begin_inset Formula $6^{th}$
+\end_inset
+
+ order 
+\end_layout
+
+\end_deeper
+\begin_layout Subsubsection
+HCTs (
+\begin_inset Formula $2\,\text{timbres}\times2\, f_{0}$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+SNR fixed to 0dB
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $f_{0}=250Hz$
+\end_inset
+
+ or 
+\begin_inset Formula $500Hz$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+Harmonics 
+\begin_inset Formula $\in[0,3.5kHz]$
+\end_inset
+
+ (
+\begin_inset Formula $\textbf{dark}$
+\end_inset
+
+) or 
+\begin_inset Formula $\in[0,20kHz]$
+\end_inset
+
+ (
+\begin_inset Formula $\textbf{broad}$
+\end_inset
+
+) 
+\end_layout
+
+\begin_layout Subsubsection
+CT controls (
+\begin_inset Formula $2\,\text{timbres}\times2\, f_{0}$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+The aim is to check whether or not the low amplitude CT in ACTs are masked
+ by noise.
+ If those controls elicit a 'correct' pitch percept, it means they are not
+ masked
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $f_{0}=250Hz$
+\end_inset
+
+ or 
+\begin_inset Formula $500Hz$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+timbre naturally 
+\begin_inset Formula $\textbf{broad}$
+\end_inset
+
+.
+ 
+\begin_inset Formula $\textbf{dark}$
+\end_inset
+
+ timbre similar to that for ACT targets 
+\end_layout
+
+\begin_layout Itemize
+amplitude = 
+\begin_inset Formula $1/4$
+\end_inset
+
+ (corresponds to amplitude of low CT in lowest ratio ACT targets)
+\end_layout
+
+\begin_layout Standard
+For these controls, snr are defined in reference to the corresponding ACT
+ target (adding back the CT of amplitude 1) 
+\end_layout
+
+\begin_layout Subsection
+Background noise
+\end_layout
+
+\begin_layout Standard
+Additive Low pass filtered white noise is added to the A-B-A stimuli at
+ different SNRs.
+\end_layout
+
+\begin_layout Standard
+Construction: 
+\end_layout
+
+\begin_layout Itemize
+generate white noise 
+\end_layout
+
+\begin_layout Itemize
+LP filter, Butterworth : 
+\begin_inset Formula $f_{cut}=1000Hz$
+\end_inset
+
+, 
+\begin_inset Formula $6^{th}$
+\end_inset
+
+ order 
+\end_layout
+
+\begin_layout Itemize
+scale to match desired snr (with respect to target energy - except for controls)
+ 
+\end_layout
+
+\end_body
+\end_document
