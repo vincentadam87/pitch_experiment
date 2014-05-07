@@ -1,0 +1,23 @@
+# data
+*.wav
+*.csv
+# python
+*.pyc
+
+# psychopy
+*.pickle
+
+# tex 
+*.log
+*.aux
+*.pdf
+*.fdb_latexmk
+*.synctex.gz
+
+# other
+*.md~
+*.ipynb_checkpoints/
+*.gitignore~
+*.png
+
+Code/notebooks

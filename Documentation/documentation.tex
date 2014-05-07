@@ -1,0 +1,173 @@
+\documentclass[11pt,a4paper,oneside]{article}
+\usepackage{amsfonts,amsmath}
+\usepackage{comment}
+\usepackage{graphicx,amssymb,mathtools,bm}
+\usepackage{tikz}
+\usepackage{float}
+\usetikzlibrary{fit,positioning}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{url}
+\usepackage{filecontents}
+%\usepackage{mathdots}
+\usepackage[toc,page]{appendix}
+
+\setlength\parindent{0pt}
+
+% \begin{filecontents*}{database.bib}
+% @article{huettel2004predicting,
+%   title={Predicting auditory tone-in-noise detection performance: the effects of neural variability},
+%   author={Huettel, Lisa G and Collins, Leslie M},
+%   journal={Biomedical Engineering, IEEE Transactions on},
+%   volume={51},
+%   number={2},
+%   pages={282--293},
+%   year={2004},
+%   publisher={IEEE}
+% }
+% }\end{filecontents*}
+
+
+
+\begin{document}
+
+\renewcommand{\v}[1]{\mathbf{#1}}
+\newcommand{\diag}{\mathop{\mathrm{diag}}}
+
+
+%-----------------------------------------------
+
+\title{Timbral effects on the perception of ambiguous pitch}
+\date{}
+\maketitle
+
+%-------------------------------------------------------------------------------
+\section{Aim \& Motivation}
+
+From Philipp Hehrmann's thesis:\\
+The most common type of errors in pitch judgements, aside from small deviations around the true pitch due to limited discriminability, are octave mistakes.
+These errors are strongly influenced by brightness of stimulus timbre.
+Here we study these influences - that is how brightness influences the way humans resolve ambiguity - for stimuli of fixed pitch chroma and varied brighness.
+
+\section{Task description}
+
+In each trial, subjects are presented an A-B-A sound triplet where A is a flanker and B a target stimulus. They  are asked to judge the shape of the melodic contour as either rising-falling ($\nearrow \searrow$) or falling-rising ($\searrow \nearrow$). No feedback is given given.\\
+
+Trial description:
+\begin{itemize}
+\item Inter-trial interval (time between response and next stimulus onset) = 1s
+\item stimulus duration = 400 ms
+\item stimulus structure:
+B (10ms) - F (60ms) - B (100ms) - T (60ms) - B (100ms) - F (60ms) - B (10ms)\\
+with B=Blank, F=Flanker, T=Target
+\end{itemize}
+
+\subsection{Calibration}
+
+Subjects are given the opportunity to choose a confortable sound level while listening to non ambiguous ACTs (ratio 1 and 9) with 0dB noise. Once chosen, the level is kept fixed for the rest of the experiment.
+
+\subsection{Training}
+
+Subjects are presented the instructions and start with two training sessions.
+Those sessions differ from the main task in the variety of presented targets only
+\begin{itemize}
+\item session 1: ACTs with ratios 1 and 9 (with 0dB noise)
+\item session 2: ACTs with ratios 1, 2.25 and 4 (with 0dB noise)
+\end{itemize}
+
+Each session lasts 5 minutes.
+
+\subsection{Main Task}
+
+In the main task the 23 different stimuli are presented 30 times each in a randomized order.
+
+\section{Detailed Instructions}
+
+In each trial, subjects are asked to judge the shape of the melodic contour the A-B-A sound presented as either rising-falling ($\nearrow \searrow$) or falling-rising ($\searrow \nearrow$). \\
+Subjects are told that the purpose of the experiment is to probe their subjective perceptual experience and that there is no strictly right or wrong response in any trial.\\
+Subjects are also informed that they are likely to experience ambiguous stimuli in which case they should make a quick decision according to their best judgement.\\
+Subject are furthemore instructed that the stimuli are independent form trial to trial and not influenced by their previous choices in any way, and that long sequences of identically shaped triplets may occur simply by chance.
+
+%-------------------------------------------------------
+\section{Stimulus description}
+
+The aim is to trigger octave errors between $f_0 = 500Hz$ and $f_0/2 = 250 Hz$\\
+the stimulus consists of a \textit{target} sound, preceded and followed by two identical \textit{flankers}.\\
+
+\textbf{In a given trial, flankers and target (except controls) have same energy}, corresponding to chosen comfort level.\\
+
+Low pass filtered noise is added at a snr relative to target (and flanker). \\
+
+I separately describe flanker, targets and the low pass filtered noise
+
+%--------------------------------
+\subsection{Flanker}
+
+Missing fundamental HCT at $f_i = \frac{f_0}{\sqrt(2)}$, half an octave between the two possible target fundamental frequencies
+
+\begin{itemize}
+\item $f_i = 353 Hz$
+\item Harmonics $3-20$, sine phase, equal amplitude (harmonics chosen to match target ACT timbre)
+\end{itemize}
+
+Flankers evoke a strong and unambiguous pitch at $f_i$\\
+Harmonic convention: $i^{th}$ harmonics is at frequency $i f_0$
+%--------------------------------
+\subsection{Targets}
+
+There are 2 main types of targets: Harmonic complex tones (HCTs) and Alternating click trains (ACTs).
+
+\subsubsection{ACTs (  $5 \text{ ratios } \times 3 \text{ (SNR,timbre) } = 15$  )}
+
+\begin{itemize}
+\item  ratios = $1, \quad 1.69,\quad 2.25,\quad 2.89,\quad 4$
+\item  (SNR,timbre) = (0dB,broad) , (-6dB, broad) , (0dB, dark)
+\item Construction
+  \begin{itemize}
+  \item  Harmonics $1-20$, sine phase, equal amplitude \textbf{($=1$)} $\rightarrow$ corresponds to the \textbf{broad} timbre
+  \item  filtering (\textbf{dark} only): LP filter, Butterworth : $f_{cut} = 3000 Hz$, $6^{th}$ order
+  \end{itemize}
+\end{itemize}
+
+
+
+
+\subsubsection{HCTs ($2 \, \text{timbres} \times 2 \, f_0 $)}
+
+SNR fixed to 0dB
+
+\begin{itemize}
+\item $f_0 = 250Hz$ or  $500 Hz$
+\item Harmonics $\in [0, 3.5 kHz]$ (\textbf{dark}) or $\in [0, 20 kHz]$ (\textbf{broad}) 
+\end{itemize}
+
+
+\subsubsection{CT controls ($2 \, \text{timbres} \times 2 \, f_0 $)}
+
+The aim is to check whether or not the low amplitude CT in ACTs are masked by noise.
+If those controls elicit a 'correct' pitch percept, it means they are not masked
+
+\begin{itemize}
+\item $f_0 = 250Hz$ or  $500 Hz$
+\item timbre naturally \textbf{broad}. \textbf{dark} timbre similar to that for ACT targets
+\item   amplitude = $1/4$ (corresponds to amplitude of low CT in lowest ratio ACT targets) 
+\end{itemize}
+
+For these controls, snr are defined in reference to the corresponding ACT target (adding back the CT of amplitude 1)
+%-------------------------------------------------------
+
+\subsection{Background noise}
+
+Additive Low pass filtered white noise is added to the A-B-A stimuli at different SNRs.
+
+Construction:
+\begin{itemize}
+\item generate white noise
+\item LP filter, Butterworth : $f_{cut} = 1000 Hz$, $6^{th}$ order
+\item scale to match desired snr (with respect to target energy - except for controls)
+\end{itemize}
+
+
+
+
+\end{document}
+
